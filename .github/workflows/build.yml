@@ -26,7 +26,7 @@ jobs:
           #- { name: 'macOS ARM', os: macos-latest, arch: arm64 }
           - { name: 'Linux x86_64', os: ubuntu-22.04, arch: x86_64 }
           #- { name: 'Linux ARM', os: ubuntu-18.04, arch: armhf }
-      fail-fast: true
+      fail-fast: false
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -109,14 +109,6 @@ jobs:
       uses: lunathir/gha-setup-vsdevenv@avoid-deprecation-warnings
       with:
         arch: ${{ steps.windows-identify.outputs.vswhere-target }}
-
-    - name: Setup Toolchain [Windows MinGW]
-      if: ${{ matrix.config.compiler == 'mingw' }}
-      run: |
-        sudo apt update
-        sudo apt install \
-          mingw-w64 \
-          mingw-w64-tools
 
     - name: Install Dependencies [Linux x86_64]
       if: ${{ runner.os == 'Linux' && matrix.config.compiler != 'mingw' && matrix.config.arch == 'x86_64' }}
