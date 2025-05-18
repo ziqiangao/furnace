@@ -478,7 +478,7 @@ bool needsValue(String param) {
 void initParams() {
   params.push_back(TAParam("h","help",false,pHelp,"","display this help"));
 
-  params.push_back(TAParam("a","audio",true,pAudio,"jack|sdl|portaudio|pipe","set audio engine (SDL by default)"));
+  //params.push_back(TAParam("a","audio",true,pAudio,"jack|sdl|portaudio|pipe","set audio engine (SDL by default)"));
   params.push_back(TAParam("o","output",true,pOutput,"<filename>","output audio to file"));
   params.push_back(TAParam("O","vgmout",true,pVGMOut,"<filename>","output .vgm data"));
   params.push_back(TAParam("D","direct",false,pDirect,"","set VGM export direct stream mode"));
@@ -497,10 +497,10 @@ void initParams() {
   params.push_back(TAParam("l","loops",true,pLoops,"<count>","set number of loops"));
   params.push_back(TAParam("s","subsong",true,pSubSong,"<number>","set sub-song"));
   params.push_back(TAParam("o","outmode",true,pOutMode,"one|persys|perchan","set file output mode"));
-  params.push_back(TAParam("S","safemode",false,pSafeMode,"","enable safe mode (software rendering and no audio)"));
-  params.push_back(TAParam("A","safeaudio",false,pSafeModeAudio,"","enable safe mode (with audio"));
+  //params.push_back(TAParam("S","safemode",false,pSafeMode,"","enable safe mode (software rendering and no audio)"));
+  //params.push_back(TAParam("A","safeaudio",false,pSafeModeAudio,"","enable safe mode (with audio"));
 
-  params.push_back(TAParam("B","benchmark",true,pBenchmark,"render|seek","run performance test"));
+  //params.push_back(TAParam("B","benchmark",true,pBenchmark,"render|seek","run performance test"));
 
   params.push_back(TAParam("V","version",false,pVersion,"","view information about Furnace."));
   params.push_back(TAParam("W","warranty",false,pWarranty,"","view warranty disclaimer."));
@@ -676,8 +676,9 @@ int main(int argc, char** argv) {
         logV("text domain 2: %s",localeRet);
       }
     }
-#endif
+
   }
+#endif
 
   initParams();
 
@@ -890,11 +891,13 @@ int main(int argc, char** argv) {
           fclose(f);
         } else {
           reportError(fmt::sprintf(_("could not open file! (%s)"),strerror(errno)));
+          return 1;
         }
         w->finish();
         delete w;
       } else {
         reportError(_("could not write command stream!"));
+        return 1;
       }
     }
     if (vgmOutName!="") {
@@ -906,11 +909,13 @@ int main(int argc, char** argv) {
           fclose(f);
         } else {
           reportError(fmt::sprintf(_("could not open file! (%s)"),strerror(errno)));
+          return 1;
         }
         w->finish();
         delete w;
       } else {
         reportError(_("could not write VGM!"));
+        return 1;
       }
     }
     if (outName!="") {
@@ -945,6 +950,7 @@ int main(int argc, char** argv) {
         DivROMExport* pendingExport = e.buildROM(romTarget);
         if (pendingExport==NULL) {
           reportError(_("could not create exporter! you may want to report this issue..."));
+          return 1;
         } else {
           pendingExport->setConf(romExportConfig);
           if (pendingExport->go(&e)) {
@@ -962,17 +968,21 @@ int main(int argc, char** argv) {
                   fclose(f);
                 } else {
                   reportError(fmt::sprintf(_("could not open file! (%s)"),strerror(errno)));
+                  return 1;
                 }
               }
             } else {
               reportError(fmt::sprintf(_("ROM export failed! (%s)"),e.getLastError()));
+              return 1;
             }
           } else {
             reportError(_("could not begin exporting process! TODO: elaborate"));
+            return 1;
           }
         }
       } else {
         reportError(_("no matching ROM export target is available."));
+        return 1;
       }
     }
     if (txtOutName!="") {
@@ -985,11 +995,13 @@ int main(int argc, char** argv) {
           fclose(f);
         } else {
           reportError(fmt::sprintf(_("could not open file! (%s)"),strerror(errno)));
+          return 1;
         }
         w->finish();
         delete w;
       } else {
         reportError(_("could not write text!"));
+        return 1;
       }
     }
     finishLogFile();
@@ -1007,6 +1019,7 @@ int main(int argc, char** argv) {
     cli.bindEngine(&e);
     if (!cli.init()) {
       reportError(_("error while starting CLI!"));
+      return 1;
     } else {
       cliSuccess=true;
     }
