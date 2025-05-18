@@ -166,6 +166,7 @@ jobs:
             CMAKE_EXTRA_ARGS+=('-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded')
           fi
         elif [ '${{ matrix.config.compiler }}' == 'mingw' ]; then
+          CMAKE_EXTRA_ARGS+=('-G' 'MinGW Makefiles')
           CMAKE_EXTRA_ARGS+=('-DCMAKE_TOOLCHAIN_FILE=scripts/Cross-MinGW-${{ steps.windows-identify.outputs.mingw-target }}.cmake')
           if [ '${{ matrix.config.arch }}' == 'x86' ]; then
             CMAKE_EXTRA_ARGS+=('-DSUPPORT_XP=ON')
