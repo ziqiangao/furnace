@@ -17,6 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <cassert>
 #include "engine.h"
 #include "../ta-log.h"
 #include <stack>
